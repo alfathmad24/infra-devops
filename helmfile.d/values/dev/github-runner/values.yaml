@@ -7,7 +7,7 @@ runner:
     #!/bin/bash
     set -x
 
-    gpg --import /home/runner/key/dev.asc
-    gpg --import /home/runner/key/staging.asc
-    gpg --import /home/runner/key/production.asc
+    gpg --import /home/runner/key/dev.key
+    gpg --import /home/runner/key/staging.key
+    gpg --import /home/runner/key/production.key
   # helmSecretsKey: see secrets.yaml

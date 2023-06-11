@@ -26,9 +26,9 @@ RUN chmod +x /usr/local/bin/helm
 # helmfile
 RUN wget https://github.com/roboll/helmfile/releases/download/v0.140.0/helmfile_linux_amd64 -O /usr/bin/helmfile && chmod +x /usr/bin/helmfile
 
-RUN helm3 plugin install https://github.com/databus23/helm-diff
-RUN helm3 plugin install https://github.com/chartmuseum/helm-push
-RUN helm3 plugin install --version=2.0.1 https://github.com/dcasadevall/helm-secrets
+RUN helm plugin install https://github.com/databus23/helm-diff
+RUN helm plugin install https://github.com/chartmuseum/helm-push
+RUN helm plugin install --version=2.0.1 https://github.com/dcasadevall/helm-secrets
 
 RUN /home/runner/entrypoint.sh
 
