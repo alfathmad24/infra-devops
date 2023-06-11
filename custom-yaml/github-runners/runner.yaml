@@ -1,0 +1,14 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: alfathmad24-runner
+  namespace: actions-runner-system
+spec:
+  replicas: 1
+  template:
+    spec:
+      image: asia-southeast1-docker.pkg.dev/alfath-386215/dev/action-runner:latest
+      repository: alfathmad24/nextjs-fe
+      githubAPICredentialsFrom:
+        secretRef:
+          name: alfathmad24-token

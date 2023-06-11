@@ -1,0 +1,17 @@
+{{- $root := . -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "nextjs-fe.fullname" . }}-cors
+  labels:
+    {{- include "nextjs-fe.labels" . | nindent 4 }}
+data:
+  CORS.rule: |
+      add_header 'Access-Control-Allow-Origin' '*';
+      add_header 'Access-Control-Allow-Credentials' 'true';
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, HEAD';
+      add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range,Accept,Authorization,X-Requested-With,store,x-recaptcha,X-CSRF-Token';
+      add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range,Accept,Authorization,X-Requested-With,store,x-recaptcha,X-CSRF-Token';
+      add_header 'Access-Control-Max-Age' 1728000;
+      add_header Permissions-Policy "midi=(),microphone=(),magnetometer=(),gyroscope=(),fullscreen=(self)";

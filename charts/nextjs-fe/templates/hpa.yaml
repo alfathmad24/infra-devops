@@ -1,0 +1,58 @@
+{{- if .Values.cattleAutoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "nextjs-fe.fullname" . }}-cattle
+  labels:
+    {{- include "nextjs-fe.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "nextjs-fe.fullname" . }}-cattle
+  minReplicas: {{ .Values.cattleAutoscaling.cattleminReplicas }}
+  maxReplicas: {{ .Values.cattleAutoscaling.cattlemaxReplicas }}
+  metrics:
+    {{- if .Values.cattleAutoscaling.cattletargetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.cattleAutoscaling.cattletargetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.cattleAutoscaling.cattletargetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.cattleAutoscaling.cattletargetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
+---
+{{- if .Values.stableAutoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "nextjs-fe.fullname" . }}-stable
+  labels:
+    {{- include "nextjs-fe.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "nextjs-fe.fullname" . }}-stable
+  minReplicas: {{ .Values.stableAutoscaling.stableminReplicas }}
+  maxReplicas: {{ .Values.stableAutoscaling.stablemaxReplicas }}
+  metrics:
+    {{- if .Values.stableAutoscaling.stabletargetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.stableAutoscaling.stabletargetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.stableAutoscaling.stabletargetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.stableAutoscaling.stabletargetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
+

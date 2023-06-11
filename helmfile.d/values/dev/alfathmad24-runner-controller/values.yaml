@@ -1,0 +1,6 @@
+authSecret:
+  create: true
+  name: "alfathmad24-token"
+
+image:
+  actionsRunnerRepositoryAndTag: "summerwind/actions-runner:latest"

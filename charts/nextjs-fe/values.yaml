@@ -1,0 +1,202 @@
+# Default values for loccitane.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+stableReplicaCount: 0
+cattleReplicaCount: 1
+
+image:
+  repository: asia-southeast1-docker.pkg.dev/xxx
+  #pullPolicy: IfNotPresent
+  pullPolicy: Always
+  tag: v10
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+customEnvVar: []
+  #BASE_URL: oms-marketplace-v2.gcp-staging.testingnow.me
+  #GRAPHQL_URL: oms-marketplace-v2.gcp-staging.testingnow.me/graphql
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingressTraefik:
+  enabled: false
+
+ingress:
+  enabled: false
+  hostsName: buruhketik.com
+  enableTls: true
+  certResolver: resolver
+  redirectToHttps: true
+  manualTLSSecretName: "" # kubectl create secret tls mitra10-cert --key="m10.key" --cert="mitra10.com.pem"
+  amoebaForceHttps: false
+  amoebaTls: false
+  hostNameAmoeba: ""
+ingressNginx:
+  useWWWPrefix: false
+resources:
+  limits:
+    cpu: 500m
+    memory: 700Mi
+  requests:
+    cpu: 200m
+    memory: 512Mi
+
+tolerations: []
+
+nodeSelector: {}
+
+cattleNodeSelector: {}
+
+stableNodeSelector: {}
+
+appEnvironment: "local"
+
+varnishNodeSelector: {}
+
+varnish:
+  enabled : false
+  replicaCount: 1
+  cacheSize: 100m
+  hdrLen: 65536
+  respSize: 98304
+  maxAge: "300"
+  sMaxAge: "300"
+  berespTTL: "300s"
+  firstByteTimeout: "600s"
+  image:
+    repository: varnish
+    pullPolicy: IfNotPresent
+    tag: "6.5.1-1"
+  resources:
+    limits:
+      cpu: 200m
+      memory: 400Mi
+    requests:
+      cpu: 100m
+      memory: 200Mi
+
+pm2:
+  enabled: true
+
+maintenance:
+  enabled: false
+  ipStrat: false # tolong jangan diubah dan biarkan tetap false (staging tidak butuh ipStrategy karena tidak memakai sucuri)
+  allowedIp:
+    - 127.0.0.1 # localhost
+  customBanner:
+    enabled: false
+    faviconUrl: "https://abcd/pub/media/abcd.png" # upload custom logo to SC under pub/media
+    bannerUrl: "https://abcd/pub/media/abcd.png" # upload custom banner to SC under pub/media
+    mobileBannerUrl: "" # upload custom banner to SC under pub/media
+
+cattleAutoscaling:
+  enabled: false
+  cattleminReplicas: 1
+  cattlemaxReplicas: 3
+  cattletargetCPUUtilizationPercentage: 70
+  cattletargetMemoryUtilizationPercentage: 70
+stableAutoscaling:
+  enabled: false
+  stableminReplicas: 1
+  stablemaxReplicas: 3
+  stabletargetCPUUtilizationPercentage: 70
+  stabletargetMemoryUtilizationPercentage: 70
+
+redirectWww:
+  enabled: false
+forceNonWWW: false
+
+stableKedaScaler:
+  enabled: false
+  resources:
+    minReplica: 1
+    maxReplica: 2
+    threshold: '734003200' #MiB to Byte format, fetch from Grafana metrics by query (visit: https://www.convertunits.com/from/MiB/to/byte)
+  scaleupPolicies:
+    - periodSeconds: 15
+      type: Percent
+      value: 100
+  scaledownPolicies:
+    - periodSeconds: 60
+      type: Pods
+      value: 2
+
+cattleKedaScaler:
+  enabled: false
+  resources:
+    minReplica: 1
+    maxReplica: 10
+    threshold: '901775360' #MiB to Byte format, fetch from Grafana metrics by query (visit: https://www.convertunits.com/from/MiB/to/byte)
+  scaleupPolicies:
+    - periodSeconds: 15
+      type: Percent
+      value: 100
+  scaledownPolicies:
+    - periodSeconds: 60
+      type: Pods
+      value: 2
+
+cronKeda:                                   # cronKeda only scale cattle pods for now
+  enabled: false                            # makesure disable another KEDA scaler rules if you want use it
+  timezone: Asia/Jakarta
+  start: 00 12 * * *
+  end: 30 12 * * *
+  maxReplica: 10           # limit replica
+  desiredReplicas: "5"
+  scaleupPolicies:
+    - periodSeconds: 15
+      type: Percent
+      value: 100
+  scaledownPolicies:
+    - periodSeconds: 60
+      type: Pods
+      value: 2
+
+graphqlProxy:
+  enabled: false # Varnish Required
+  hostName: "graphql-proxy.gcp-staging.testingnow.me"  # Domain for proxy. Change endpoint swift.config.js same like this. | Makesure domain ready on DNS before apply
+  salesChannelHost: "b2cdemonew.gcp-staging.testingnow.me" # Set host proxy into Sales Channel
+  internalBackendHost: "b2cdemonew-swift"
+  cacheControl: "240"
+
+# replace .html preffix
+replaceHtml: false
+
+# Amoeba
+amoeba:
+  enabled: false
+
+# Newrelic
+newrelic:
+  enabled: false
+  appname: "myAppnextjs-fe"
+
+# Default Security Header
+headerNginx:
+  referrerPolicy: "no-referrer-when-downgrade"
+  defaultaccessControlAllowOrigin: "*"
+  restrictAccessControlAllowOrigin: []
+  defaultCSP: "upgrade-insecure-requests"
+  restrictCSP: []
+
+dotEnv:
+  ALGORITHM: aes-256-cbc #helmfile.d/values/getswift-nextjs-fe/values.yaml
+  FCM_TOPIC: notificationsnextjs-fe
+  NEXT_PUBLIC_ALGORITHM: aes-256-cbc
+  CHAT_CONFIG_USERNAME: mage2user!2345
+  ACCESS_KEY: "" #From this line see helmfile.d/values/getswift-nextjs-fe/secrets.yaml
+  ENCRYPTION_KEY: ""
+  FCM_KEY_SERVER: ""
+  SESSION_SECRET: ""
+  NEXT_PUBLIC_ENCRYPTION_KEY: ""
+  CHAT_CONFIG_PASSWORD: ""
+
+# For generate config.json in nextjs-fe
+generateConfig: false
+configJsonPath: "core/api/rest/config/config.json"
+storeCode: "default" #Please check swift.config.js
