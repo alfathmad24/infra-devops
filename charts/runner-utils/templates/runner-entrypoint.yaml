@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: runner-entrypoint
+  labels:
+    {{- include "runner-utils.labels" . | nindent 4 }}
+data:
+  entrypoint.sh: |
+    {{ .Values.runner.entrypoint | b64enc }}
+type: Opaque

@@ -1,0 +1,13 @@
+runner:
+  # this is a service account with encrypted by base64 encoding, if you want to change this
+  # serviceAccount: see secrets.yaml
+  # sshIdRsa: see secrets.yaml
+  # sshKnownHosts: see secrets.yaml
+  entrypoint: |
+    #!/bin/bash
+    set -x
+
+    gpg --import /home/runner/key/dev.asc
+    gpg --import /home/runner/key/staging.asc
+    gpg --import /home/runner/key/production.asc
+  # helmSecretsKey: see secrets.yaml

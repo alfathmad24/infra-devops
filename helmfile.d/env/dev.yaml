@@ -44,7 +44,7 @@ releases:
   <<: *default
   namespace: nextjs
   installed: true
-  chart: ../chart/nextjs-be
+  chart: ../charts/nextjs-be
 
 - name: alfathmad24-runner-controller
   <<: *default
@@ -56,6 +56,18 @@ releases:
   <<: *default
   namespace: actions-runner-system
   chart: actions-runner-controller/actions-runner-controller
+  installed: false
+
+- name: github-runner
+  <<: *default
+  namespace: actions-runner-system
+  chart: ../../charts/runner-utils
+  installed: true
+
+- name: mysql-dev
+  <<: *default
+  namespace: mysql
+  chart: bitnami/mysql
   installed: true
 
 - name: ingress-nginx

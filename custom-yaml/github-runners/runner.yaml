@@ -12,3 +12,23 @@ spec:
       githubAPICredentialsFrom:
         secretRef:
           name: alfathmad24-token
+      volumes:
+        - name: id-rsa-volume
+          secret:
+            secretName: runner-ssh-key
+            defaultMode: 0755
+        - name: helm-secrets-volume
+          secret:
+            secretName: runner-helm-secret-key
+            defaultMode: 0755
+        - name: entrypoint-volume
+          secret:
+            secretName: runner-entrypoint
+            defaultMode: 0755
+      volumeMounts:
+        - name: id-rsa-volume
+          mountPath: /home/runner/.ssh
+        - name: helm-secrets-volume
+          mountPath: /home/runner/key
+        - name: entrypoint-volume
+          mountPath: /home/runner/entrypoint

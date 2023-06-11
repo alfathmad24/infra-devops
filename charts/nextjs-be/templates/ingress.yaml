@@ -1,0 +1,38 @@
+{{- $root := . -}}
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "nextjs-fe.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.certResolver }} # ingress.certResolver
+    kubernetes.io/ingress.class: nginx
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  {{ if .Values.ingress.enableTls }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.hostName }}
+    {{ if .Values.ingress.TLSSecretName }}
+    secretName: {{ .Values.ingress.TLSSecretName }}
+    {{- else -}}
+    secretName: {{ $fullName }}-tls
+    {{- end }} # ingress.manualTLSSecretName
+  {{- end }} # ingress.enableTls
+  rules:
+    - host: {{ .Values.ingress.hostName }}
+      http:
+        paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: {{ $fullName }}
+              port:
+                number: {{ $svcPort }}
+{{- end }}
