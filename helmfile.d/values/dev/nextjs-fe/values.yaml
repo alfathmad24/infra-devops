@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   repository: asia-southeast1-docker.pkg.dev/alfath-386215/dev/nextjs-fe
   pullPolicy: IfNotPresent
-  tag: bc5e72aa9c0a70e3173c288d03861fc200730246
+  tag: 9717a376dcdbe4dc556e2a4a0010f5a978fafdd6
 # imagePullSecrets:
 #   - name: gcr-json-key
 nameOverride: ""
